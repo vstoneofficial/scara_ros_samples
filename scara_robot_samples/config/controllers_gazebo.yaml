@@ -1,0 +1,16 @@
+arm_robot:      
+  arm1_joint_position_controller:
+    type: position_controllers/JointPositionController
+    joint: arm1_joint
+  arm2_joint_position_controller:
+    type: position_controllers/JointPositionController
+    joint: arm2_joint
+  arm3_joint_position_controller:
+    type: position_controllers/JointPositionController
+    joint: arm3_joint
+  arm4_joint_position_controller:
+    type: position_controllers/JointPositionController
+    joint: arm4_joint
+  arm5r_joint_position_controller:
+    type: position_controllers/JointPositionController
+    joint: arm5r_joint

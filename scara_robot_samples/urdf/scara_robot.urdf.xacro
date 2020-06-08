@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<robot name="arm_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find scara_robot_samples)/urdf/common.xacro"/>
+
+  <link name="world"/>
+
+  <joint name="base_link_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/> 
+  </joint>
+  <!--xacro:boxlink link_name="base_base" mass="0.191" x="0" y="0" z="0.005" depth="0.23" width="0.21" height="0.01"/-->
+
+    <link name="base_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_base.dae" />
+          <!--box size="0.23 0.21 0.009" /-->
+        </geometry>
+        <!--origin xyz="0.062048 0 0.0045" rpy="0 0 0"/-->
+        <origin xyz="0.062049 0 0.0045" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.23031 0.21022 0.0090636" />
+        </geometry>
+        <origin xyz="0.062048 0 0.0045" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.191" depth="0.23031" width="0.21022" height="0.0090636" />
+      </inertial>
+    </link>
+
+  <!--xacro:armlink link_name="base_base" model_fname="scara_base" mass="0.191" x="0.03103885" y="0" z="0.005" depth="0.23" width="0.21" height="0.01"/-->
+  <gazebo reference="base_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <joint name="base_pillar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_pillar"/> 
+  </joint>
+  <!--xacro:boxlink link_name="base_link" mass="0.139" x="0" y="0" z="0.00349" depth="0.0789772" width="0.0699" height="0.178"/-->
+  <!--xacro:armlink link_name="base_link" model_fname="scara_pillar" mass="0.139" x="0" y="0" z="0.00349" depth="0.0789772" width="0.0699" height="0.1814568"/-->
+
+    <link name="base_pillar">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_pillar.dae" />
+          <!--box size="0.0747846 0.0699 0.178" /-->
+        </geometry>
+        <origin xyz="-0.017177 0 0.092449" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_pillar.dae" />
+          <!--box size="0.079075 0.064949 0.17801" /-->
+        </geometry>
+        <origin xyz="-0.017177 0 0.092449" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.139" depth="0.079075" width="0.064949" height="0.17801" />
+      </inertial>
+    </link>
+
+  <gazebo reference="base_pillar">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+  <joint name="arm1_joint" type="revolute">
+    <xacro:armjoint
+      parent_link="base_pillar" link_name="arm1_link" lower="-2.443" upper="2.443" velocity="1" 
+      origin_x="0.0" origin_y="0" origin_z="0.16148" axis_x="0" axis_y="0" axis_z="1">
+    </xacro:armjoint>
+  </joint>
+  <xacro:arm_transmission trans_name="arm1_trans" joint_name="arm1_joint" actuator_name="arm1_motor" />
+  <!--xacro:boxlink link_name="arm1_link" mass="0.03" x="0.055" y="0" z="0" depth="0.11" width="0.035" height="0.055"/-->
+
+    <link name="arm1_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id1.dae" />
+          <!--box size="0.11571 0.035642 0.055002" /-->
+        </geometry>
+        <origin xyz="0.040328 0 0.0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id1.dae" />
+          <!--box size="0.11571 0.035642 0.055002" /-->
+        </geometry>
+        <origin xyz="0.040328 0 0.0" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.03" depth="0.11571" width="0.035642" height="0.055002" />
+      </inertial>
+    </link>
+
+
+  <gazebo reference="arm1_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+
+
+  <joint name="arm2_joint" type="revolute">
+    <xacro:armjoint
+      parent_link="arm1_link" link_name="arm2_link" lower="-2.443" upper="2.443" velocity="1" 
+      origin_x="0.08" origin_y="0" origin_z="0.0" axis_x="0" axis_y="0" axis_z="1">
+    </xacro:armjoint>
+  </joint>
+  <xacro:arm_transmission trans_name="arm2_trans" joint_name="arm2_joint" actuator_name="arm2_motor" />
+
+    <link name="arm2_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id2.dae" />
+        </geometry>
+        <origin xyz="0.02634 0 0.0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id2.dae" />
+          <!--box size="0.036 0.0889 0.037589" /-->
+        </geometry>
+        <origin xyz="0.02634 0 0.0" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.08" depth="0.036" width="0.0889" height="0.037589" />
+      </inertial>
+    </link>
+
+
+  <gazebo reference="arm2_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+  <joint name="arm3_joint" type="prismatic">
+    <xacro:armjoint
+      parent_link="arm2_link" link_name="arm3_link" lower="-0.035" upper="0.035" velocity="1"  
+      origin_x="0.06489" origin_y="0" origin_z="0" axis_x="0" axis_y="0" axis_z="1">
+    </xacro:armjoint>
+  </joint>
+  <xacro:arm_transmission trans_name="arm3_trans" joint_name="arm3_joint" actuator_name="arm3_motor" />
+  <!--xacro:boxlink link_name="arm3_link" mass="0.095" x="0" y="0" z="0" depth="0.05" width="0.05" height="0.117"/-->
+
+    <link name="arm3_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id3.dae" />
+        </geometry>
+        <origin xyz="0.001 0 0.0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <!--box size="0.057969 0.085997 0.12258" /-->
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id3.dae" />
+        </geometry>
+        <origin xyz="0.001 0 0.0" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.08" depth="0.057969" width="0.085997" height="0.12258" />
+      </inertial>
+    </link>
+
+
+  <gazebo reference="arm3_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+
+  <joint name="arm4_joint" type="revolute">
+    <xacro:armjoint
+      parent_link="arm3_link" link_name="arm4_link" lower="-2.617" upper="2.617" velocity="1" 
+      origin_x="0.015032" origin_y="0" origin_z="-0.048953" axis_x="0" axis_y="0" axis_z="1">
+    </xacro:armjoint>
+  </joint>
+  <xacro:arm_transmission trans_name="arm4_trans" joint_name="arm4_joint" actuator_name="arm4_motor" />
+  <!--xacro:boxlink link_name="arm4_link" mass="0.042" x="0" y="0" z="0" depth="0.057" width="0.057" height="0.025"/-->
+    <link name="arm4_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id4.dae" />
+        </geometry>
+        <origin xyz="0.001 0 -0.0198" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder length="0.0396" radius="0.05784" />
+        </geometry>
+        <origin xyz="0.001 0 -0.0198" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:cylinder_inertial mass="0.042" radius="0.05784" length="0.0396" />
+      </inertial>
+    </link>
+
+
+  <gazebo reference="arm4_link">
+    <material>Gazebo/Gray</material>
+  </gazebo>
+
+
+
+
+
+
+
+  <joint name="arm5r_joint" type="prismatic">
+
+    <xacro:armjoint
+      parent_link="arm4_link" link_name="arm5r_link" lower="-0.005" upper="0.005" velocity="1"  
+      origin_x="0.0" origin_y="0.0" origin_z="-0.038115" axis_x="0" axis_y="1" axis_z="0">
+    </xacro:armjoint>
+  </joint>
+
+  <!--xacro:boxlink link_name="arm5r_link" mass="0.004" x="0" y="0" z="0" depth="0.023" width="0.001" height="0.023"/-->
+    <link name="arm5r_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id5_r.dae" />
+        </geometry>
+        <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id5_r.dae" />
+        </geometry>
+        <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.004" depth="0.040119" width="0.032069" height="0.032527" />
+      </inertial>
+    </link>
+
+
+  <gazebo reference="arm5r_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+  <xacro:arm_transmission trans_name="arm5r_trans" joint_name="arm5r_joint" actuator_name="arm5r_motor" />
+
+
+
+
+  <joint name="arm5l_joint" type="prismatic">
+    <xacro:armjoint
+      parent_link="arm4_link" link_name="arm5l_link" lower="-0.005" upper="0.005" velocity="1"  
+      origin_x="0.0" origin_y="0.0" origin_z="-0.038115" axis_x="0" axis_y="1" axis_z="0">
+    </xacro:armjoint>
+    <mimic joint="arm5r_joint" multiplier="-1" offset="0" />
+  </joint>
+
+  <xacro:mimic_joint_plugin_gazebo name_prefix="arm5l_joint"
+    parent_joint="arm5r_joint" mimic_joint="arm5l_joint"
+    has_pid="true" multiplier="-1.0" max_effort="10.0" />
+
+    <link name="arm5l_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id5_l.dae" />
+        </geometry>
+        <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/scara_id5_l.dae" />
+        </geometry>
+        <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <xacro:box_inertial mass="0.004" depth="0.040119" width="0.032069" height="0.032527" />
+      </inertial>
+    </link>
+
+  <!--xacro:boxlink link_name="arm5l_link" mass="0.004" x="0" y="0" z="0" depth="0.023" width="0.001" height="0.023"/-->
+  <gazebo reference="arm5l_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/arm_robot</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+</robot>
+

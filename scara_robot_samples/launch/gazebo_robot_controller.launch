@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="model" default="$(find scara_robot_samples)/urdf/scara_robot.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(arg model)'" />
+
+  <rosparam file="$(find scara_robot_samples)/config/gazebo_controller.yaml" command="load" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find scara_robot_samples)/worlds/lit.world"/>
+  </include>
+
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model arm_robot" />
+
+
+  <rosparam file="$(find scara_robot_samples)/config/trajectory_controller.yaml" command="load" />
+
+  <node name="controller_spawner" pkg="controller_manager"
+        type="spawner" respawn="false"
+        output="screen" ns="/arm_robot"
+        args="arm_robot_trajectory_controller joint_state_controller"/>
+
+  <node name="scara_controller" pkg="scara_robot_samples" type="scarasubscriber_gazebo" />
+  <node name="scara_publisher" pkg="scara_robot_samples" type="scarapublisher_gazebo" />
+
+
+
+
+  <arg name="gui" default="true" />
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(arg model)'" />
+  <param name="use_gui" value="$(arg gui)"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <node name="rviz" pkg="rviz"
+        type="rviz"
+        args="-d $(find scara_robot_samples)/urdf.rviz" required="true" />
+
+  <node name="scara_jointstatebridge" pkg="scara_robot_samples" type="jointstatebridge" />
+
+</launch>

@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <property name="M_PI" value="3.14159274"/>
+
+  <xacro:macro name="cylinder_inertial" params="mass radius length">
+	<mass value="${mass}"/>
+	<inertia ixx="${((radius*radius)/4 + (length*length)/12)*mass}" ixy="0" ixz="0"
+			 iyy="${((radius*radius)/4 + (length*length)/12)*mass}" iyz="0"
+			 izz="${(mass*radius*radius)/2}" />
+  </xacro:macro>
+
+  <xacro:macro name="box_inertial" params="mass height width depth">
+	<mass value="${mass}"/>
+	<inertia ixx="${(mass*(width*width+depth*depth))/12}" ixy="0" ixz="0"
+			 iyy="${(mass*(height*height+depth*depth))/12}" iyz="0"
+			 izz="${(mass*(height*height+width*width))/12}" />
+  </xacro:macro>
+
+
+
+
+  <xacro:macro name="boxlink" params="link_name mass x y z height width depth">
+    <link name="${link_name}">
+      <visual>
+        <geometry>
+          <box size="${depth} ${width} ${height}" />
+        </geometry>
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${depth} ${width} ${height}" />
+        </geometry>
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="${mass}"/>
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+	<inertia ixx="${(mass*(width*width+depth*depth))/12}" ixy="0" ixz="0"
+			 iyy="${(mass*(height*height+depth*depth))/12}" iyz="0"
+			 izz="${(mass*(height*height+width*width))/12}" />
+      </inertial>
+    </link>
+  </xacro:macro>
+
+
+  <xacro:macro name="armlink" params="link_name model_fname mass x y z height width depth">
+    <link name="${link_name}">
+      <visual>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/dae/${model_fname}.dae" />
+        </geometry>
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="package://scara_robot_samples/meshes/stl/${model_fname}.stl" />
+        </geometry>
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="${mass}"/>
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+	<inertia ixx="${(mass*(width*width+depth*depth))/12}" ixy="0" ixz="0"
+			 iyy="${(mass*(height*height+depth*depth))/12}" iyz="0"
+			 izz="${(mass*(height*height+width*width))/12}" />
+      </inertial>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="armjoint" 
+      params="parent_link link_name lower upper velocity origin_x origin_y origin_z axis_x axis_y axis_z">
+      <origin xyz="${origin_x} ${origin_y} ${origin_z}" rpy="0 0 0"/>
+      <axis xyz="${axis_x} ${axis_y} ${axis_z}"/>
+      <parent link="${parent_link}"/>
+      <child link="${link_name}"/>
+      <dynamics damping="0.1" />
+      <limit effort="5" lower="${lower}" upper="${upper}" velocity="${velocity}" />
+  </xacro:macro>
+
+  <xacro:macro name="arm_transmission" 
+      params="trans_name joint_name actuator_name">
+    <transmission name="${trans_name}">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint_name}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${actuator_name}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:macro name="mimic_joint_plugin_gazebo" params="name_prefix parent_joint mimic_joint has_pid:=false multiplier:=1.0 offset:=0 sensitiveness:=0.0 max_effort:=1.0 robot_namespace:=''">
+    <gazebo>
+      <plugin name="${name_prefix}mimic_joint_plugin" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+        <joint>${parent_joint}</joint>
+        <mimicJoint>${mimic_joint}</mimicJoint>
+        <xacro:if value="${has_pid}">                     <!-- if set to true, PID parameters from "/gazebo_ros_control/pid_gains/${mimic_joint}" are loaded -->
+          <hasPID />
+        </xacro:if>
+        <multiplier>${multiplier}</multiplier>
+        <offset>${offset}</offset>
+        <sensitiveness>${sensitiveness}</sensitiveness>   <!-- if absolute difference between setpoint and process value is below this threshold, do nothing; 0.0 = disable [rad] -->
+        <maxEffort>${max_effort}</maxEffort>              <!-- only taken into account if has_pid:=true [Nm] -->
+        <xacro:unless value="${robot_namespace == ''}">
+          <robotNamespace>($robot_namespace)</robotNamespace>
+        </xacro:unless>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+
+</robot>
